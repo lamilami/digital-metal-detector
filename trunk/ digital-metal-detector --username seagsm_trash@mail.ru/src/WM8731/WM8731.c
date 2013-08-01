@@ -205,23 +205,37 @@ void codec_send(uint16_t s_data)
 *******************************************************************************/   
 void WM8731_Init(void)
 {
+  /*
+  Bits[15:9] control address bits.
+  Bits[8:0]  control data bits.
+  */
    I2C_Configuration();
-   //codec_send( RESET_REGISTER ); /* reset */
-   codec_send( 0x0F00 ); /* reset */
-   //codec_send( LEFT_HEADPHONE_OUT  | (1<<8) | (1<<7) | (100<<0) ); /* headphone out	*/
-   //codec_send( RIGHT_HEADPHONE_OUT | (1<<8) | (1<<7) | (100<<0) );
-   codec_send( 0x1000  | (1<<8) | (1<<7) | (100<<0) );//left /* headphone out	*/
-   codec_send( 0x1100 | (1<<8) | (1<<7) | (100<<0) );//right
-   //codec_send( ANALOGUE_AUDIO_PATH_CONTROL | DAC_SEL | MUTEMIC );
-   codec_send( 0x40 | DAC_SEL | MUTEMIC );
-   //codec_send( DIGITAL_AUDIO_PATH_CONTRL | (2<<1) ); /* 44.1kHz	*/
-   codec_send( 0x50 | (2<<1) ); /* 44.1kHz	*/
-   //codec_send( POWER_DOWN_COTROL | (0<<4) | (0<<3) | (1<<2) | (1<<1) | (1<<0));	/* powerup */
-   codec_send( 0x60 | (0<<4) | (0<<3) | (1<<2) | (1<<1) | (1<<0));	/* powerup */
-   //codec_send( SAMPLING_CONTROL | NORMAL_MODE | BOSR_NORMAL_256FS );
-   codec_send( 0x80 | NORMAL_MODE | BOSR_NORMAL_256FS );
-   //codec_send( ACTIVE_CONTROL | ACTIVE );
-   codec_send( 0x90 | ACTIVE );
+   codec_send( RESET_REGISTER ); /* reset */
+   codec_send( LEFT_HEADPHONE_OUT  | (1<<8) | (1<<7) | (0x79<<0) ); /* headphone out	*/
+   codec_send( RIGHT_HEADPHONE_OUT | (1<<8) | (1<<7) | (0x79<<0) );
+   codec_send( ANALOGUE_AUDIO_PATH_CONTROL | DAC_SEL | MUTEMIC );
+   codec_send( DIGITAL_AUDIO_PATH_CONTRL | (2<<1) ); /* 44.1kHz	*/
+   codec_send( POWER_DOWN_COTROL | (0<<4) | (0<<3) | (1<<2) | (1<<1) | (1<<0));	/* powerup */
+   codec_send( SAMPLING_CONTROL | NORMAL_MODE | BOSR_NORMAL_256FS );
+   codec_send( ACTIVE_CONTROL | ACTIVE );
+
+#if 0
+    while( !WM8731_Send( 0x1E ,0x00,  ADDR_WM8731S) );//reset
+    while( !WM8731_Send( 0x05 ,0xF9,  ADDR_WM8731S) );//lh
+    while( !WM8731_Send( 0x07 ,0xF9,  ADDR_WM8731S) );//rh
+  
+    while( !WM8731_Send( 0x08 ,0x12,  ADDR_WM8731S) );//AAPC
+    
+    while( !WM8731_Send( 0x0A ,0x04,  ADDR_WM8731S) );//DIGITAL_AUDIO_PATH_CONTRL
+    while( !WM8731_Send( 0x0C ,0x07,  ADDR_WM8731S) );//POWER_DOWN_COTROL
+    while( !WM8731_Send( 0x10 ,0x00,  ADDR_WM8731S) );//SAMPLING_CONTROL
+    while( !WM8731_Send( 0x12 ,0x01,  ADDR_WM8731S) );//ACTIVE_CONTROL
+#endif
+
+
+
+
+
 }
 
 /*******************************************************************************

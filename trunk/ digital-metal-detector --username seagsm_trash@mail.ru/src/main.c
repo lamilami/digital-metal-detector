@@ -30,6 +30,9 @@
 #include "OV7725.h"
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
+
+#define M_PI 3.1415
 
 
 #ifdef __GNUC__
@@ -44,6 +47,11 @@
 void USART_Configuration(void);
 void I2S_Configuration(uint32_t I2S_AudioFreq);
 void I2S_WriteByte( uint8_t * data , uint32_t size);
+void I2S_WriteByte_u8_Direct( uint8_t * data , uint32_t size);
+
+void I2S_WriteByte_u16_Direct(uint16_t data);
+
+
 
 /*******************************************************************************
 * Function Name  : main
@@ -55,15 +63,31 @@ void I2S_WriteByte( uint8_t * data , uint32_t size);
 *******************************************************************************/
 int main(void)
 {	
+  uint16_t data;
+  double a,b,dac_samples;
   USART_Configuration();
   WM8731_Init();
-  memcpy(&userWav,WAV_DATA,sizeof(WavHeader));
-  DisplayWavInfo();
-  I2S_Configuration(userWav.sampleRate);
+//  memcpy(&userWav,WAV_DATA,sizeof(WavHeader));
+//  DisplayWavInfo();
+//  I2S_Configuration(userWav.sampleRate);
+  I2S_Configuration(48000);
   /* Infinite loop */
   while(1)
   {
-    I2S_WriteByte( (uint8_t*)WAV_DATA , sizeof(WAV_DATA) );
+    //I2S_WriteByte( (uint8_t*)WAV_DATA , sizeof(WAV_DATA) );
+    //I2S_WriteByte_u8_Direct( (uint8_t*)WAV_DATA , sizeof(WAV_DATA) );
+    dac_samples = 40;
+    for(a = 0; a < dac_samples; a++)
+    {  
+      b = ( 
+            cos( 2*M_PI*a/dac_samples) //+ 
+//            cos( 3*M_PI*a/dac_samples) + 
+//            cos( 5*M_PI*a/dac_samples) + 
+//            cos( 7*M_PI*a/dac_samples) 
+          ) * 32000.0/1.0 + 32768.0;
+      data = (uint16_t)b + 32768.0; 
+      I2S_WriteByte_u16_Direct(data);
+    }
   }  
 }
 
@@ -117,6 +141,57 @@ void I2S_Configuration(uint32_t I2S_AudioFreq)
 
   /* Enable the I2S2 */
   I2S_Cmd(SPI2, ENABLE);
+}
+
+/*******************************************************************************
+* Function Name  : I2S_WriteByte
+* Description    : I2S To WM8731
+* Input          : data: u16
+* Output         : None
+* Return         : None
+* Attention      : None
+*******************************************************************************/
+void I2S_WriteByte_u16_Direct(uint16_t data)
+{
+    /* Wait the Tx buffer to be empty */
+    while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET) ;
+    /* Send a data from I2S3 */
+    SPI_I2S_SendData(SPI2, data);			/* to Left CH */
+
+    /* Wait the Tx buffer to be empty */
+    while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET) ;
+    /* Send a data from I2S3 */
+    SPI_I2S_SendData(SPI2, data);			/* to Right CH */
+}
+
+/*******************************************************************************
+* Function Name  : I2S_WriteByte
+* Description    : I2S To WM8731
+* Input          : - data: pionter to u8 
+*                  - size: Any
+* Output         : None
+* Return         : None
+* Attention		 : None
+*******************************************************************************/
+
+void I2S_WriteByte_u8_Direct( uint8_t * data , uint32_t size)
+{
+  uint32_t addr;
+  uint8_t temp;	
+  for(addr=0; addr<size; addr++ )
+  {
+    temp=data[addr];
+
+    /* Wait the Tx buffer to be empty */
+    while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET) ;
+    /* Send a data from I2S3 */
+    SPI_I2S_SendData(SPI2, temp<<7);			/* to Left CH */
+
+    /* Wait the Tx buffer to be empty */
+    while (SPI_I2S_GetFlagStatus(SPI2, SPI_I2S_FLAG_TXE) == RESET) ;
+    /* Send a data from I2S3 */
+    SPI_I2S_SendData(SPI2, temp<<7);			/* to Right CH */
+  } 
 }
 
 /*******************************************************************************
