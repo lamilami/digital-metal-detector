@@ -1,4 +1,4 @@
-/****************************************Copyright (c)**************************************************                         
+/****************************************Copyright (c)**************************************************
 **
 **                                 http://www.powermcu.com
 **
@@ -13,15 +13,17 @@
 ** Descriptions:		The original version
 **
 **------------------------------------------------------------------------------------------------------
-** Modified by:			
-** Modified date:	
+** Modified by:
+** Modified date:
 ** Version:
-** Descriptions:		
+** Descriptions:
 ********************************************************************************************************/
 
 
 /* Includes ------------------------------------------------------------------*/
 #include "WM8731.h"
+
+#define MASTER_ON 0
 
 #if 1
 /*******************************************************************************
@@ -34,12 +36,12 @@
 *******************************************************************************/
 void I2C_Configuration(void)
 {
-  GPIO_InitTypeDef  GPIO_InitStructure; 
+  GPIO_InitTypeDef  GPIO_InitStructure;
   /* Configure I2C2 pins: PB10->SCL and PB11->SDA */
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB, ENABLE);
   GPIO_InitStructure.GPIO_Pin =  GPIO_Pin_10 | GPIO_Pin_11;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
-  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;  
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_Out_OD;
   GPIO_Init(GPIOB, &GPIO_InitStructure);
 }
 
@@ -53,12 +55,12 @@ void I2C_Configuration(void)
 * Attention		 : None
 *******************************************************************************/
 static void I2C_delay(void)
-{	
+{
    uint8_t i=5; /* 这里可以优化速度,经测试最低到5还能写入 */
-   while(i) 
-   { 
-     i--; 
-   } 
+   while(i)
+   {
+     i--;
+   }
 }
 
 /*******************************************************************************
@@ -111,11 +113,11 @@ static void I2C_Stop(void)
 * Return         : 返回为:=1有ACK,=0无ACK
 * Attention		 : None
 *******************************************************************************/
-static FunctionalState I2C_WaitAck(void) 	
+static FunctionalState I2C_WaitAck(void)
 {
 	SCL_L;
 	I2C_delay();
-	SDA_H;			
+	SDA_H;
 	I2C_delay();
 	SCL_H;
 	I2C_delay();
@@ -136,7 +138,7 @@ static FunctionalState I2C_WaitAck(void)
 * Return         : None
 * Attention		 : None
 *******************************************************************************/
-static void I2C_SendByte(uint8_t SendByte) 
+static void I2C_SendByte(uint8_t SendByte)
 {
     uint8_t i=8;
     while(i--)
@@ -144,9 +146,9 @@ static void I2C_SendByte(uint8_t SendByte)
         SCL_L;
         I2C_delay();
       if(SendByte&0x80)
-        SDA_H;  
-      else 
-        SDA_L;   
+        SDA_H;
+      else
+        SDA_L;
         SendByte<<=1;
         I2C_delay();
 		SCL_H;
@@ -155,7 +157,7 @@ static void I2C_SendByte(uint8_t SendByte)
     SCL_L;
 }
 
-#endif 
+#endif
 
 /*******************************************************************************
 * Function Name  : WM8731_Send
@@ -166,21 +168,21 @@ static void I2C_SendByte(uint8_t SendByte)
 * Output         : None
 * Return         : 返回为:=1成功写入,=0失败
 * Attention		 : None
-*******************************************************************************/           
+*******************************************************************************/
 static FunctionalState WM8731_Send(uint8_t WriteAddress, uint8_t SendByte , uint8_t DeviceAddress)
-{		
+{
     if(!I2C_Start())return DISABLE;
-    I2C_SendByte(DeviceAddress & 0xFF);        /* 设置器件地址 */ 
+    I2C_SendByte(DeviceAddress & 0xFF);        /* 设置器件地址 */
     if(!I2C_WaitAck()){I2C_Stop(); return DISABLE;}
-    I2C_SendByte( WriteAddress );     
-    I2C_WaitAck();	
-    I2C_SendByte(SendByte);		    
-    I2C_WaitAck();   
-    I2C_Stop(); 
+    I2C_SendByte( WriteAddress );
+    I2C_WaitAck();
+    I2C_SendByte(SendByte);
+    I2C_WaitAck();
+    I2C_Stop();
 	/* 注意：因为这里要等待写完，可以采用查询或延时方式(10ms)	*/
     /* Systick_Delay_1ms(10); */
     return ENABLE;
-}									 
+}
 
 /*******************************************************************************
 * Function Name  : codec_send
@@ -189,7 +191,7 @@ static FunctionalState WM8731_Send(uint8_t WriteAddress, uint8_t SendByte , uint
 * Output         : None
 * Return         : None
 * Attention		 : None
-*******************************************************************************/   
+*******************************************************************************/
 void codec_send(uint16_t s_data)
 {
   while( !WM8731_Send( (s_data >> 8) & 0xFF ,s_data & 0xFF ,  ADDR_WM8731S) );
@@ -202,7 +204,7 @@ void codec_send(uint16_t s_data)
 * Output         : None
 * Return         : None
 * Attention		 : None
-*******************************************************************************/   
+*******************************************************************************/
 void WM8731_Init(void)
 {
   /*
@@ -214,27 +216,20 @@ void WM8731_Init(void)
    codec_send( LEFT_HEADPHONE_OUT  | (1<<8) | (1<<7) | (0x79<<0) ); /* headphone out	*/
    codec_send( RIGHT_HEADPHONE_OUT | (1<<8) | (1<<7) | (0x79<<0) );
    codec_send( ANALOGUE_AUDIO_PATH_CONTROL | DAC_SEL | MUTEMIC );
-   codec_send( DIGITAL_AUDIO_PATH_CONTRL | (2<<1) ); /* 44.1kHz	*/
-   codec_send( POWER_DOWN_COTROL | (0<<4) | (0<<3) | (1<<2) | (1<<1) | (1<<0));	/* powerup */
-   codec_send( SAMPLING_CONTROL | NORMAL_MODE | BOSR_NORMAL_256FS );
-   codec_send( ACTIVE_CONTROL | ACTIVE );
+   //codec_send( DIGITAL_AUDIO_PATH_CONTRL | (2<<1) ); /* 44.1kHz	*/
+   codec_send( DIGITAL_AUDIO_PATH_CONTRL | (0<<1) ); /* correction disabled	*/
 
-#if 0
-    while( !WM8731_Send( 0x1E ,0x00,  ADDR_WM8731S) );//reset
-    while( !WM8731_Send( 0x05 ,0xF9,  ADDR_WM8731S) );//lh
-    while( !WM8731_Send( 0x07 ,0xF9,  ADDR_WM8731S) );//rh
-  
-    while( !WM8731_Send( 0x08 ,0x12,  ADDR_WM8731S) );//AAPC
-    
-    while( !WM8731_Send( 0x0A ,0x04,  ADDR_WM8731S) );//DIGITAL_AUDIO_PATH_CONTRL
-    while( !WM8731_Send( 0x0C ,0x07,  ADDR_WM8731S) );//POWER_DOWN_COTROL
-    while( !WM8731_Send( 0x10 ,0x00,  ADDR_WM8731S) );//SAMPLING_CONTROL
-    while( !WM8731_Send( 0x12 ,0x01,  ADDR_WM8731S) );//ACTIVE_CONTROL
+#if MASTER_ON  /* Set to master mode.*/
+   codec_send( DIGITAL_AUDIO_INTERFACE_FORMAT | (1<<6)|(0<<3)|(0<<2)|(2<<0) ); /* set 16 bits format	*/
 #endif
+   codec_send( POWER_DOWN_COTROL | (0<<4) | (0<<3) | (1<<2) | (1<<1) | (1<<0));	/* powerup */
 
-
-
-
+#if MASTER_ON
+   codec_send( SAMPLING_CONTROL | NORMAL_MODE | BOSR_NORMAL_256FS |(0x07)<< 2 );/* 96000 sampling rate.*/
+#else if
+   codec_send( SAMPLING_CONTROL | NORMAL_MODE | BOSR_NORMAL_256FS );
+#endif
+   codec_send( ACTIVE_CONTROL | ACTIVE );
 
 }
 
@@ -245,7 +240,7 @@ void WM8731_Init(void)
 * Output         : None
 * Return         : None
 * Attention		 : None
-*******************************************************************************/  
+*******************************************************************************/
 void WM8731_Vol(uint8_t vol)
 {
    codec_send(LEFT_HEADPHONE_OUT  | (1<<8) | (1<<7) | (vol<<0));
