@@ -60,33 +60,84 @@ void USART_Configuration(void);
 *******************************************************************************/
 int main(void)
 {
-  uint16_t data;
+  uint16_t data,i,num;
   double a,b,dac_samples;
+
+  uint16_t wave_data[100];
+
+  delay_init();
   USART_Configuration();
   WM8731_Init();
-//  memcpy(&userWav,WAV_DATA,sizeof(WavHeader));
-//  DisplayWavInfo();
-//  I2S_Configuration(userWav.sampleRate);
   I2S_Configuration(96000);
+
+  /* Build wave data. */
+    num = 10;//5-20kHz,10-10kHz,20-5kHz
+    for(i = 0; i < dac_samples; i++)
+    {
+      b = (
+           sin( 2*M_PI*((double)i)/((double)num))
+          );
+      wave_data[i] = (uint16_t)(b*32000.0);
+    }
+  i=0;
+  while(1)
+  {
+    I2S_WriteByte_u16_Direct(wave_data[i]);
+    i++;
+    if(i>=num)
+    {
+      i=0;
+    }
+  }
+
+#if 0
   /* Infinite loop */
   while(1)
   {
     //I2S_WriteByte( (uint8_t*)WAV_DATA , sizeof(WAV_DATA) );
     //I2S_WriteByte_u8_Direct( (uint8_t*)WAV_DATA , sizeof(WAV_DATA) );
-    dac_samples = 40;
-    for(a = 0; a < dac_samples; a++)
+    dac_samples = 80;
+
+    for(b = 0; b < 2; b++)
+    //for(a = 0; a < dac_samples; a++)
     {
-      b = (
-            cos( 2*M_PI*a/dac_samples) //+
-//            cos( 3*M_PI*a/dac_samples) +
-//            cos( 5*M_PI*a/dac_samples) +
-//            cos( 7*M_PI*a/dac_samples)
-          );
-      data = (uint16_t)b*32000.0;
-      I2S_WriteByte_u16_Direct(data);
+//      b = (
+//            sin( 2*M_PI*a/dac_samples)
+          //+ cos( 3*M_PI*a/dac_samples)
+          //+ cos( 5*M_PI*a/dac_samples)
+          //+ cos( 7*M_PI*a/dac_samples)
+//          );
+//      a=1;
+//      while(1)
+//      {
+//        if(a == 1)
+//        {
+//          a = -1;
+//        }
+//        else
+//        {
+//          a =  1;
+//        }
+        //data = (uint16_t)b;
+
+
+        data = (uint16_t)(a*32000.0);
+        I2S_WriteByte_u16_Direct(data);
+      }
     }
+    //delay_us(1000000);
   }
+#endif
+
 }
+
+
+
+
+
+
+
+
 
 /*******************************************************************************
 * Function Name  : USART_Configuration
