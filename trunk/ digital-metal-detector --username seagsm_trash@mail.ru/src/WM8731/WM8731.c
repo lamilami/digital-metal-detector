@@ -226,7 +226,7 @@ void WM8731_Init(void)
 
 #if MASTER_ON
    codec_send( SAMPLING_CONTROL | NORMAL_MODE | BOSR_NORMAL_256FS |(0x07)<< 2 );/* 96000 sampling rate.*/
-#else if
+#else
    codec_send( SAMPLING_CONTROL | NORMAL_MODE | BOSR_NORMAL_256FS );
 #endif
    codec_send( ACTIVE_CONTROL | ACTIVE );

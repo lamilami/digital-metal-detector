@@ -4,6 +4,7 @@
 #include "stm32f10x.h"
 
 void I2S_Configuration(uint32_t I2S_AudioFreq);
+void I2S_INT_Configuration(uint32_t I2S_AudioFreq,uint32_t I2S_Tx_Mode );
 void I2S_WriteByte( uint8_t * data , uint32_t size);
 void I2S_WriteByte_u8_Direct( uint8_t * data , uint32_t size);
 void I2S_WriteByte_u16_Direct(uint16_t data);

@@ -27,6 +27,7 @@
 #include "WAV.h"
 #include "WavSample.h"
 #include "I2S_board_driver.h"
+#include "systick.h"
 #include "GLCD.h"
 #include "OV7725.h"
 #include <stdio.h>
@@ -60,19 +61,19 @@ void USART_Configuration(void);
 *******************************************************************************/
 int main(void)
 {
-  uint16_t data,i,num;
-  double a,b,dac_samples;
+  uint16_t i,num;
+  double b,dac_samples;
 
   uint16_t wave_data[100];
 
   delay_init();
   USART_Configuration();
   WM8731_Init();
-  I2S_Configuration(96000);
-
+  //I2S_Configuration(96000);
+  I2S_INT_Configuration(8000,I2S_Mode_MasterTx );
   /* Build wave data. */
     num = 10;//5-20kHz,10-10kHz,20-5kHz
-    for(i = 0; i < dac_samples; i++)
+    for(i = 0; i < num; i++)
     {
       b = (
            sin( 2*M_PI*((double)i)/((double)num))
@@ -82,7 +83,7 @@ int main(void)
   i=0;
   while(1)
   {
-    I2S_WriteByte_u16_Direct(wave_data[i]);
+ //   I2S_WriteByte_u16_Direct(wave_data[i]);
     i++;
     if(i>=num)
     {
