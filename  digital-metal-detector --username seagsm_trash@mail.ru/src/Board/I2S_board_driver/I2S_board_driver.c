@@ -68,10 +68,11 @@ void I2S_Configuration(uint32_t I2S_AudioFreq)
 * Return         : None
 * Attention		 : None
 *******************************************************************************/
-void I2S_DMA_Configuration(uint32_t I2S_AudioFreq,uint32_t I2S_Tx_Mode,uint32_t* MemBaseAddress, uint32_t MemBuffSize )
+void I2S_DMA_Configuration(uint32_t I2S_AudioFreq,uint32_t I2S_Tx_Mode,void* MemBaseAddress, uint32_t MemBuffSize )
 {
-  I2S_InitTypeDef I2S_InitStructure;
+  I2S_InitTypeDef  I2S_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
+  DMA_InitTypeDef  DMA_Init_Structure;
 
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOB , ENABLE);
   RCC_APB1PeriphClockCmd(RCC_APB1Periph_SPI2, ENABLE);
@@ -108,22 +109,32 @@ void I2S_DMA_Configuration(uint32_t I2S_AudioFreq,uint32_t I2S_Tx_Mode,uint32_t*
 
   I2S_Init(SPI2, &I2S_InitStructure);
 
-  {
-    NVIC_InitTypeDef   NVIC_InitStructure;
-    NVIC_InitStructure.NVIC_IRQChannel = SPI2_IRQn;
-    NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 0;
-    NVIC_InitStructure.NVIC_IRQChannelSubPriority =0;
-    NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;
-    NVIC_Init(&NVIC_InitStructure);
-    SPI_I2S_ClearITPendingBit(SPI2, SPI_I2S_IT_TXE);
-    SPI_I2S_ITConfig(SPI2, SPI_I2S_IT_TXE, ENABLE);//прерывание если буфер передатчика пуст(TXE)
-  }
-
-
-
+  /* Start DMA init. */
+  /* DMA1 module is ON. */
+  RCC_AHBPeriphClockCmd(RCC_AHBPeriph_DMA1, ENABLE);
+  /* DMA configuration structure. */
+  DMA_StructInit(&DMA_Init_Structure);
+  DMA_Init_Structure.DMA_PeripheralBaseAddr = (uint32_t)&(SPI2->DR);//set I2S Tx register like target.
+  DMA_Init_Structure.DMA_MemoryBaseAddr = (uint32_t)MemBaseAddress;//Set mem buffer.
+  DMA_Init_Structure.DMA_DIR = DMA_DIR_PeripheralDST;//data from mem buff to I2S.
+  DMA_Init_Structure.DMA_BufferSize = MemBuffSize;//set buffer size.
+  DMA_Init_Structure.DMA_PeripheralInc = DMA_PeripheralInc_Disable;//disable peripheral address incrimentation.
+  DMA_Init_Structure.DMA_MemoryInc = DMA_MemoryInc_Enable;//Enable mem buffer address incrementation.
+  DMA_Init_Structure.DMA_Mode = DMA_Mode_Circular;
+  DMA_Init_Structure.DMA_PeripheralDataSize = DMA_PeripheralDataSize_HalfWord;//set peripheral data size to 16 bits
+  DMA_Init_Structure.DMA_MemoryDataSize = DMA_MemoryDataSize_HalfWord;//set memory data size to 16 bits
+  /* Init DMA module. */
+  DMA_Init(DMA1_Channel5, &DMA_Init_Structure);
 
   /* Enable the I2S2 */
   I2S_Cmd(SPI2, ENABLE);
+  /* Connect I2S Tx to DMA. */
+  SPI_I2S_DMACmd(SPI2, SPI_I2S_DMAReq_Tx, ENABLE);
+  /* Start DMA1 Ch5. */
+  DMA_Cmd(DMA1_Channel5, ENABLE);
+
+
+
 }
 
 
@@ -178,6 +189,7 @@ void I2S_INT_Configuration(uint32_t I2S_AudioFreq,uint32_t I2S_Tx_Mode )
 
   I2S_Init(SPI2, &I2S_InitStructure);
 
+#if 0
   {
     NVIC_InitTypeDef   NVIC_InitStructure;
     NVIC_InitStructure.NVIC_IRQChannel = SPI2_IRQn;
@@ -188,7 +200,7 @@ void I2S_INT_Configuration(uint32_t I2S_AudioFreq,uint32_t I2S_Tx_Mode )
     SPI_I2S_ClearITPendingBit(SPI2, SPI_I2S_IT_TXE);
     SPI_I2S_ITConfig(SPI2, SPI_I2S_IT_TXE, ENABLE);//прерывание если буфер передатчика пуст(TXE)
   }
-
+#endif
 
 
 

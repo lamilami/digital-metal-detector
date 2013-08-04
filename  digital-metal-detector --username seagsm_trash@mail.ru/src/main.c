@@ -64,15 +64,22 @@ int main(void)
   uint16_t i,num;
   double b,dac_samples;
 
-  uint16_t wave_data[100];
+  uint16_t wave_data[200];
 
   delay_init();
   USART_Configuration();
   WM8731_Init();
-  //I2S_Configuration(96000);
-  I2S_INT_Configuration(8000,I2S_Mode_MasterTx );
+
   /* Build wave data. */
-    num = 10;//5-20kHz,10-10kHz,20-5kHz
+    num = 25;//5-20kHz,10-10kHz,20-5kHz
+#if 0
+    for(i = 0; i < num; i++)
+    {
+      b = (double)i*(double)(65000.0/num);
+      wave_data[i] = (uint16_t)(b);
+    }
+#endif
+#if 0
     for(i = 0; i < num; i++)
     {
       b = (
@@ -80,10 +87,29 @@ int main(void)
           );
       wave_data[i] = (uint16_t)(b*32000.0);
     }
+#endif
+#if 1
+    i=0;
+    while(i < (2*num))
+    {
+      b = (
+           sin( 2*M_PI*((double)i)/((double)num))
+          );
+      wave_data[i] = (uint16_t)(b*32000.0);
+      i++;
+      wave_data[i] = (uint16_t)(b*32000.0);
+      i++;
+    }
+#endif
+
+
+  //I2S_Configuration(96000);
+  //I2S_INT_Configuration(96000,I2S_Mode_MasterTx );
+  I2S_DMA_Configuration(96000, I2S_Mode_MasterTx, wave_data, (2*num));
   i=0;
   while(1)
   {
- //   I2S_WriteByte_u16_Direct(wave_data[i]);
+    //I2S_WriteByte_u16_Direct(wave_data[i]);
     i++;
     if(i>=num)
     {
