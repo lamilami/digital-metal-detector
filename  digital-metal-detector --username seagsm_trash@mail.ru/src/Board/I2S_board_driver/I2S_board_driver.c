@@ -98,7 +98,7 @@ void I2S_DMA_Configuration(uint32_t I2S_AudioFreq,uint32_t I2S_Tx_Mode,void* Mem
   SPI_I2S_DeInit(SPI2);
 
   I2S_InitStructure.I2S_Standard = I2S_Standard_Phillips;
-  I2S_InitStructure.I2S_DataFormat = I2S_DataFormat_16b;
+  I2S_InitStructure.I2S_DataFormat = I2S_DataFormat_16bextended;//extended-16 bits send in 32 bits frame
   I2S_InitStructure.I2S_MCLKOutput = I2S_MCLKOutput_Disable;
   I2S_InitStructure.I2S_AudioFreq = I2S_AudioFreq;
   I2S_InitStructure.I2S_CPOL = I2S_CPOL_Low;
@@ -126,17 +126,17 @@ void I2S_DMA_Configuration(uint32_t I2S_AudioFreq,uint32_t I2S_Tx_Mode,void* Mem
   /* Init DMA module. */
   DMA_Init(DMA1_Channel5, &DMA_Init_Structure);
 
+
+}
+void I2S_DMA_Communication_Enable(void)
+{
   /* Enable the I2S2 */
   I2S_Cmd(SPI2, ENABLE);
   /* Connect I2S Tx to DMA. */
   SPI_I2S_DMACmd(SPI2, SPI_I2S_DMAReq_Tx, ENABLE);
   /* Start DMA1 Ch5. */
   DMA_Cmd(DMA1_Channel5, ENABLE);
-
-
-
 }
-
 
 
 

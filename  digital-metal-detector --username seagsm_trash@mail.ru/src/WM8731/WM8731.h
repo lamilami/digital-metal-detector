@@ -1,4 +1,4 @@
-/****************************************Copyright (c)**************************************************                         
+/****************************************Copyright (c)**************************************************
 **
 **                                 http://www.powermcu.com
 **
@@ -13,10 +13,10 @@
 ** Descriptions:		The original version
 **
 **------------------------------------------------------------------------------------------------------
-** Modified by:			
-** Modified date:	
+** Modified by:
+** Modified date:
 ** Version:
-** Descriptions:		
+** Descriptions:
 ********************************************************************************************************/
 #ifndef __WM8731_H
 #define __WM8731_H
@@ -27,7 +27,7 @@
 /* Private define ------------------------------------------------------------*/
 #define SCL_H         GPIOB->BSRR = GPIO_Pin_10	 /* GPIO_SetBits(GPIOB , GPIO_Pin_10)   */
 #define SCL_L         GPIOB->BRR  = GPIO_Pin_10  /* GPIO_ResetBits(GPIOB , GPIO_Pin_10) */
-   
+
 #define SDA_H         GPIOB->BSRR = GPIO_Pin_11	 /* GPIO_SetBits(GPIOB , GPIO_Pin_11)   */
 #define SDA_L         GPIOB->BRR  = GPIO_Pin_11	 /* GPIO_ResetBits(GPIOB , GPIO_Pin_11) */
 
@@ -38,6 +38,7 @@
 
 /* Private function prototypes -----------------------------------------------*/
 void WM8731_Init(void);
+void WM8731_Active(void);
 void I2C_Configuration(void);
 void WM8731_Vol(uint8_t vol);
 void codec_send(uint16_t s_data);
@@ -110,7 +111,7 @@ void codec_send(uint16_t s_data);
 #define ACTIVE                          (1)
 #define INACTIVE                        (0)
 
-#endif 
+#endif
 
 /*********************************************************************************************************
       END FILE

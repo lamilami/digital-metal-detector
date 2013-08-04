@@ -12,6 +12,7 @@ void I2S_DMA_Configuration(
                             void* MemBaseAddress,
                             uint32_t MemBuffSize
                           );
+void I2S_DMA_Communication_Enable(void);
 void I2S_WriteByte( uint8_t * data , uint32_t size);
 void I2S_WriteByte_u8_Direct( uint8_t * data , uint32_t size);
 void I2S_WriteByte_u16_Direct(uint16_t data);
