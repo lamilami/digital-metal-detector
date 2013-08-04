@@ -71,7 +71,7 @@ int main(void)
   WM8731_Init();
 
   /* Build wave data. */
-    num = 25;//5-20kHz,10-10kHz,20-5kHz
+    num = 36;//5-20kHz,10-10kHz,20-5kHz
 #if 0
     for(i = 0; i < num; i++)
     {
@@ -93,8 +93,11 @@ int main(void)
     while(i < (2*num))
     {
       b = (
-           sin( 2*M_PI*((double)i)/((double)num))
+           sin( 2*M_PI*( (double)i)/( (double)(2.0*num) ))
+         + cos( 4*M_PI*( (double)i)/( (double)(2.0*num) ))
+         + sin( 6*M_PI*( (double)i)/( (double)(2.0*num) ))
           );
+      b=b/3.0;
       wave_data[i] = (uint16_t)(b*32000.0);
       i++;
       wave_data[i] = (uint16_t)(b*32000.0);
