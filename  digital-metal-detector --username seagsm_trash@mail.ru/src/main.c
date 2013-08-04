@@ -78,61 +78,39 @@ int main(void)
   //WM8731_Init();
 
   /* Build wave data. */
-    num = 36;//5-20kHz,10-10kHz,20-5kHz
-#if 0
-    for(i = 0; i < (2*num); i=i+2)
-    {
-      b = (double)i*(double)(65000.0/num);
-      wave_data[i] = (uint16_t)(b);
-      wave_data[i++] = (uint16_t)(b);
-
-    }
-#endif
-#if 0
-    for(i = 0; i < num; i++)
-    {
-      b = (
-           sin( 2*M_PI*((double)i)/((double)num))
-          );
-      wave_data[i] = (uint16_t)(b*32000.0);
-    }
-#endif
+    num = 96;//5-20kHz,10-10kHz,20-5kHz
 #if 1
     i=0;
-    while(i < (2*num))
+    while(i < (4*num))
     {
       b = (
-           sin( 2*M_PI*( (double)i)/( (double)(2.0*num) ))
-      //   + sin( 4*M_PI*( (double)i)/( (double)(2.0*num) ))
-      //   + sin( 6*M_PI*( (double)i)/( (double)(2.0*num) ))
-          );
-     // b=b/3.0;
-      wave_data[i] = (uint16_t)(b*32000.0);
+        //   sin( 2*M_PI*( (double)i)/( (double)(4.0*num) ))//  1kHz
+        // + sin( 4*M_PI*( (double)i)/( (double)(4.0*num) ))//  2kHz
+         + sin( 6*M_PI*( (double)i)/( (double)(4.0*num) ))//  3kHz
+         + sin( 8*M_PI*( (double)i)/( (double)(4.0*num) ))//  4kHz
+       //  + sin( 10*M_PI*( (double)i)/( (double)(4.0*num) ))// 5kHz
+         + sin( 12*M_PI*( (double)i)/( (double)(4.0*num) ))// 6kHz
+       //  + sin( 14*M_PI*( (double)i)/( (double)(4.0*num) ))// 7kHz
+         + sin( 16*M_PI*( (double)i)/( (double)(4.0*num) ))// 8kHz
+       //  + sin( 18*M_PI*( (double)i)/( (double)(4.0*num) ))// 9kHz
+       //  + sin( 20*M_PI*( (double)i)/( (double)(4.0*num) ))// 10kHz
+       //  + sin( 22*M_PI*( (double)i)/( (double)(4.0*num) ))// 11kHz
+         + sin( 24*M_PI*( (double)i)/( (double)(4.0*num) ))// 12kHz
+         + sin( 36*M_PI*( (double)i)/( (double)(4.0*num) ))// 18kHz
+           );
+      b=b/5.0;
+      wave_data[i] = (uint16_t)(b*32000.0);//first byte of 32 bits frame Left Ch
       i++;
-      wave_data[i] = (uint16_t)(b*32000.0);
+      wave_data[i] = 0;(uint16_t)(b*32000.0);//second byte of 32 bits frame Left Ch
+      i++;
+      wave_data[i] = (uint16_t)(b*32000.0);//first byte of 32 bits frame Right Ch
+      i++;
+      wave_data[i] = 0;(uint16_t)(b*32000.0);//second byte of 32 bits frame Right Ch
       i++;
     }
 #endif
-
-#if 0
-  b=1;
-  b = b*32000.0;
-
-  wave_data[0] = 0xAAAA;//(uint16_t)b;
-  wave_data[1] = 0x0A0E;//(uint16_t)b;
-  wave_data[2] = 0;//0xAAAA;//(uint16_t)b;
-  wave_data[3] = 0;//0xAAAA;//(uint16_t)b;
-  wave_data[4] = 0;//0xAAAA;//(uint16_t)b;
-  wave_data[5] = 0;//0xAAAA;//(uint16_t)b;
-  num = 6;
-#endif
-  //I2S_Configuration(96000);
-  //I2S_INT_Configuration(96000,I2S_Mode_MasterTx );
-  //I2S_DMA_Configuration(96000, I2S_Mode_MasterTx, wave_data, (2*num));
-  //I2S_DMA_Configuration(96000, I2S_Mode_SlaveTx, wave_data, (num));
-
-  I2S_DMA_Configuration(2, I2S_Mode_SlaveTx, wave_data, (2*num));
-
+  I2S_DMA_Configuration(2, I2S_Mode_SlaveTx, wave_data, (4*num));
+  /* This way of configuration is implemented to be sure that start bit is valid. */
   WM8731_Init();
   I2S_DMA_Communication_Enable();
   WM8731_Active();
@@ -157,45 +135,6 @@ int main(void)
     //  i=0;
     //}
   }
-
-#if 0
-  /* Infinite loop */
-  while(1)
-  {
-    //I2S_WriteByte( (uint8_t*)WAV_DATA , sizeof(WAV_DATA) );
-    //I2S_WriteByte_u8_Direct( (uint8_t*)WAV_DATA , sizeof(WAV_DATA) );
-    dac_samples = 80;
-
-    for(b = 0; b < 2; b++)
-    //for(a = 0; a < dac_samples; a++)
-    {
-//      b = (
-//            sin( 2*M_PI*a/dac_samples)
-          //+ cos( 3*M_PI*a/dac_samples)
-          //+ cos( 5*M_PI*a/dac_samples)
-          //+ cos( 7*M_PI*a/dac_samples)
-//          );
-//      a=1;
-//      while(1)
-//      {
-//        if(a == 1)
-//        {
-//          a = -1;
-//        }
-//        else
-//        {
-//          a =  1;
-//        }
-        //data = (uint16_t)b;
-
-
-        data = (uint16_t)(a*32000.0);
-        I2S_WriteByte_u16_Direct(data);
-      }
-    }
-    //delay_us(1000000);
-  }
-#endif
 
 }
 

@@ -34,7 +34,7 @@ ActionState=1
 Enabled=0
 ShowSource=1
 [DebugChecksum]
-Checksum=460156678
+Checksum=1951109456
 [Exceptions]
 StopOnUncaught=_ 0
 StopOnThrow=_ 0
@@ -57,6 +57,9 @@ Count=3
 LoggingEnabled=_ 0
 LogFile=_ ""
 Category=_ 0
+[TermIOLog]
+LoggingEnabled=_ 0
+LogFile=_ ""
 [Aliases]
 Count=0
 SuppressDialog=0
@@ -68,6 +71,3 @@ Mode=0
 Graph=0
 Symbiont=0
 Exclusions=
-[TermIOLog]
-LoggingEnabled=_ 0
-LogFile=_ ""
