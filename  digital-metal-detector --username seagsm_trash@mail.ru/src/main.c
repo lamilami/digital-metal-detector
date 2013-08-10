@@ -33,8 +33,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
-
-#define M_PI 3.1415
+#include "main.h"
 
 
 #ifdef __GNUC__
@@ -46,9 +45,13 @@
 #endif /* __GNUC__ */
 
 /* Private function prototypes -----------------------------------------------*/
+void audio_device_init(uint16_t num);
+void audio_device_start(void);
+void clear_audio_out_buffer(void);
 void USART_Configuration(void);
+void generate_signal(uint16_t num);
 
-uint16_t wave_data[200];
+uint16_t wave_data[SIGNAL_BUFFER_SIZE];
 
 
 /*******************************************************************************
@@ -61,26 +64,43 @@ uint16_t wave_data[200];
 *******************************************************************************/
 int main(void)
 {
-  uint16_t i,num,v;
-  double b,dac_samples;
 
-  /* Clear mem buffer. */
-  i=0;
-  while(i<200)
-  {
-    wave_data[i] = 0;
-    i++;
-  }
+
+  /* Init system delay.*/
   delay_init();
+  /* Init system stdio. */
   USART_Configuration();
+  /* Init output signal buffer and audio communication. */
+  audio_device_init(SIGNAL_SAMPLES);
+  /* start DMA to generate output signal.*/
+  audio_device_start();
 
-  /* Build wave data. */
-    num = 96;//5-20kHz,10-10kHz,20-5kHz
-#if 1
-    i=0;
-    while(i < (4*num))
-    {
-      b = (
+
+
+  /* Main loop. */
+  while(1)
+  {
+    delay_us(10000);
+  }
+
+
+
+
+}//end of main
+
+
+
+
+/* Generate output signal period. */
+void generate_signal(uint16_t num)
+{
+  uint16_t i;
+  double b;
+
+  i=0;
+  while(i < (4*num))
+  {
+    b = (
         //   sin( 2*M_PI*( (double)i)/( (double)(4.0*num) ))//  1kHz
         //  + sin( 4*M_PI*( (double)i)/( (double)(4.0*num) ))//  2kHz
          + sin( 6*M_PI*( (double)i)/( (double)(4.0*num) ))//  3kHz
@@ -94,53 +114,49 @@ int main(void)
         //  + sin( 22*M_PI*( (double)i)/( (double)(4.0*num) ))// 11kHz
          + sin( 24*M_PI*( (double)i)/( (double)(4.0*num) ))// 12kHz
          + sin( 36*M_PI*( (double)i)/( (double)(4.0*num) ))// 18kHz
-           );
-      b=b/6.0;
-      wave_data[i] = (uint16_t)(b*32000.0);//first byte of 32 bits frame Left Ch
-      i++;
-      wave_data[i] = 0;(uint16_t)(b*32000.0);//second byte of 32 bits frame Left Ch
-      i++;
-      wave_data[i] = (uint16_t)(b*32000.0);//first byte of 32 bits frame Right Ch
-      i++;
-      wave_data[i] = 0;(uint16_t)(b*32000.0);//second byte of 32 bits frame Right Ch
-      i++;
-    }
-#endif
-  I2S_DMA_Configuration(2, I2S_Mode_SlaveTx, wave_data, (4*num));
-  /* This way of configuration is implemented to be sure that start bit is valid. */
-  WM8731_Init();
-  I2S_DMA_Communication_Enable();
-  WM8731_Active();
-
-  i=0;
-  v=0;
-  while(1)
-  {
-    i=0;
-    while(i<200)
-    {
-    //  wave_data[i] = v;
-      i++;
-    }
-    v++;
-    delay_us(10000);
-
-    //I2S_WriteByte_u16_Direct(wave_data[i]);
-    //i++;
-    //if(i>=num)
-    //{
-    //  i=0;
-    //}
+         );
+    b=b/6.0;
+    wave_data[i] = (uint16_t)(b*32000.0);//first byte of 32 bits frame Left Ch
+    i++;
+    wave_data[i] = 0;(uint16_t)(b*32000.0);//second byte of 32 bits frame Left Ch
+    i++;
+    wave_data[i] = (uint16_t)(b*32000.0);//first byte of 32 bits frame Right Ch
+    i++;
+    wave_data[i] = 0;(uint16_t)(b*32000.0);//second byte of 32 bits frame Right Ch
+    i++;
   }
-
 }
 
+/* Init device. */
+void audio_device_init(uint16_t num)
+{
+  clear_audio_out_buffer();
+  generate_signal(num);
+  I2S_DMA_Configuration(2, I2S_Mode_SlaveTx, wave_data, (4*num));
+  /* WM8731_Init called last to be sure that start bit is valid. */
+  WM8731_Init();
+}
 
+/* Start audio communication. */
+void audio_device_start(void)
+{
+  I2S_DMA_Communication_Enable();
+  WM8731_Active();
+}
 
+/* Set to zero audio output buffer. */
+void clear_audio_out_buffer(void)
+{
+   uint16_t i;
 
-
-
-
+  /* Clear signal buffer. */
+  i=0;
+  while(i < SIGNAL_BUFFER_SIZE)
+  {
+    wave_data[i] = 0;
+    i++;
+  }
+}
 
 
 /*******************************************************************************
