@@ -64,8 +64,6 @@ int main(void)
   uint16_t i,num,v;
   double b,dac_samples;
 
-//  uint16_t wave_data[200];
-
   /* Clear mem buffer. */
   i=0;
   while(i<200)
@@ -75,7 +73,6 @@ int main(void)
   }
   delay_init();
   USART_Configuration();
-  //WM8731_Init();
 
   /* Build wave data. */
     num = 96;//5-20kHz,10-10kHz,20-5kHz
@@ -85,20 +82,20 @@ int main(void)
     {
       b = (
         //   sin( 2*M_PI*( (double)i)/( (double)(4.0*num) ))//  1kHz
-        // + sin( 4*M_PI*( (double)i)/( (double)(4.0*num) ))//  2kHz
+        //  + sin( 4*M_PI*( (double)i)/( (double)(4.0*num) ))//  2kHz
          + sin( 6*M_PI*( (double)i)/( (double)(4.0*num) ))//  3kHz
          + sin( 8*M_PI*( (double)i)/( (double)(4.0*num) ))//  4kHz
-       //  + sin( 10*M_PI*( (double)i)/( (double)(4.0*num) ))// 5kHz
+        //  + sin( 10*M_PI*( (double)i)/( (double)(4.0*num) ))// 5kHz
          + sin( 12*M_PI*( (double)i)/( (double)(4.0*num) ))// 6kHz
-       //  + sin( 14*M_PI*( (double)i)/( (double)(4.0*num) ))// 7kHz
+        //  + sin( 14*M_PI*( (double)i)/( (double)(4.0*num) ))// 7kHz
          + sin( 16*M_PI*( (double)i)/( (double)(4.0*num) ))// 8kHz
-       //  + sin( 18*M_PI*( (double)i)/( (double)(4.0*num) ))// 9kHz
-       //  + sin( 20*M_PI*( (double)i)/( (double)(4.0*num) ))// 10kHz
-       //  + sin( 22*M_PI*( (double)i)/( (double)(4.0*num) ))// 11kHz
+        //  + sin( 18*M_PI*( (double)i)/( (double)(4.0*num) ))// 9kHz
+        //  + sin( 20*M_PI*( (double)i)/( (double)(4.0*num) ))// 10kHz
+        //  + sin( 22*M_PI*( (double)i)/( (double)(4.0*num) ))// 11kHz
          + sin( 24*M_PI*( (double)i)/( (double)(4.0*num) ))// 12kHz
          + sin( 36*M_PI*( (double)i)/( (double)(4.0*num) ))// 18kHz
            );
-      b=b/5.0;
+      b=b/6.0;
       wave_data[i] = (uint16_t)(b*32000.0);//first byte of 32 bits frame Left Ch
       i++;
       wave_data[i] = 0;(uint16_t)(b*32000.0);//second byte of 32 bits frame Left Ch
