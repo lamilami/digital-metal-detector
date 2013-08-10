@@ -2,7 +2,7 @@
 
 <project>
   <fileVersion>2</fileVersion>
-  <fileChecksum>1875020767</fileChecksum>
+  <fileChecksum>1254662932</fileChecksum>
   <configuration>
     <name>Debug</name>
     <outputs>
@@ -179,6 +179,10 @@
       <file>$TOOLKIT_DIR$\inc\c\DLib_Defaults.h</file>
       <file>$TOOLKIT_DIR$\inc\c\string.h</file>
       <file>$PROJ_DIR$\src\StdPeriphLib\inc\stm32f10x_flash.h</file>
+      <file>$PROJ_DIR$\Debug\Obj\SCCB.pbi</file>
+      <file>$PROJ_DIR$\Debug\Obj\SCCB.o</file>
+      <file>$PROJ_DIR$\src\SCCB\SCCB.c</file>
+      <file>$PROJ_DIR$\src\SCCB\SCCB.h</file>
     </outputs>
     <file>
       <name>$PROJ_DIR$\src\Board\I2S_board_driver\I2S_board_driver.c</name>
@@ -859,10 +863,6 @@
           <name>ICCARM</name>
           <file> 90 141 150 155 70 129 170 101 169 62 60 156 52 100 66 45 38 158 125 130 159 93</file>
         </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 90 141 150 155 70 129 170 101 169 62 60 156 52 100 66 45 38 158 125 130 159 93</file>
-        </tool>
       </inputs>
     </file>
     <file>
@@ -972,11 +972,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 37 141 150 155 70 129 170 101 169 62 60 156 52 100 66 45 38 158 125 130 159 90 93</file>
+          <file> 37 141 150 155 70 129 170 101 169 62 60 156 52 100 66 45 38 158 125 130 159 90 93 176</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 37 141 150 155 70 129 170 101 169 62 60 156 52 100 66 45 38 158 125 130 159 90 93</file>
+          <file> 37 141 150 155 70 129 170 101 169 62 60 156 52 100 66 45 38 158 125 130 159 90 93 176</file>
         </tool>
       </inputs>
     </file>
@@ -991,7 +991,7 @@
       <inputs>
         <tool>
           <name>ILINK</name>
-          <file> 92 160 59 56 136 120 103 55 91 119 124 115 140 73 39 152 68 46 99 122 63 49 146 139 64 67 144 167 106 57 97 48 164 72 112 81 121 113 51 44 137</file>
+          <file> 92 160 59 56 136 174 120 103 55 91 119 124 115 140 73 39 152 68 46 99 122 63 49 146 139 64 67 144 167 106 57 97 48 164 72 112 81 121 113 51 44 137</file>
         </tool>
       </inputs>
     </file>
@@ -1015,6 +1015,29 @@
         <tool>
           <name>BICOMP</name>
           <file> 78 141 150 155 70 129 170 101 169 62 60 156 52 100 66 45 38 158 125 130 159 90 93</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\src\SCCB\SCCB.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 174</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 173</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 176 141 150 155 70 129 170 101 169 62 60 156 52 100 66 45 38 158 125 130 159 90 93</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 176 141 150 155 70 129 170 101 169 62 60 156 52 100 66 45 38 158 125 130 159 90 93</file>
         </tool>
       </inputs>
     </file>

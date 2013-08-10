@@ -1879,6 +1879,15 @@
       </file>
     </group>
     <group>
+      <name>SCCB</name>
+      <file>
+        <name>$PROJ_DIR$\src\SCCB\SCCB.c</name>
+      </file>
+      <file>
+        <name>$PROJ_DIR$\src\SCCB\SCCB.h</name>
+      </file>
+    </group>
+    <group>
       <name>startup</name>
       <file>
         <name>$PROJ_DIR$\src\startup\startup_stm32f10x_hd.s</name>
