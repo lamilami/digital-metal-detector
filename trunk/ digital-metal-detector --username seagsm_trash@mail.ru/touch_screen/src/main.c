@@ -78,13 +78,13 @@ int main(void)
 
 
   /* Init system delay.*/
-  //delay_init();
+  delay_init();
   /* Init system stdio. */
- // USART_Configuration();
+  USART_Configuration();
   /* Init output signal buffer and audio communication. */
- // audio_device_init(SIGNAL_SAMPLES);
+  audio_device_init(SIGNAL_SAMPLES);
   /* start DMA to generate output signal.*/
- // audio_device_start();
+  audio_device_start();
 
   LCD_Initializtion();
   LCD_BackLight_Init();
@@ -136,11 +136,8 @@ void vTaskLED1(void *pvParameters) {
 
   while (1)
   {
-  //  getDisplayPoint(&display, Read_Ads7846(), &matrix ) ;
-  //  TP_DrawPoint(display.x,display.y);
-  //  TP_DrawPoint(display.x,display.y-1);
-  //  TP_DrawPoint(display.x-1,display.y-1);
-  //  TP_DrawPoint(display.x-1,display.y);
+    printf("This is task 1\n");
+    vTaskDelay( 500 );
   }
 
 }
@@ -154,6 +151,8 @@ void vTaskLED2(void *pvParameters) {
     TP_DrawPoint(display.x,display.y+1);
     TP_DrawPoint(display.x+1,display.y+1);
     TP_DrawPoint(display.x+1,display.y);
+    printf("This is task 2\n");
+    taskYIELD();
   }
 
 }
