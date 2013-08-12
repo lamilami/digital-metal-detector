@@ -103,6 +103,12 @@ int main(void)
                         ( xTaskHandle * ) NULL);
 
 
+  LCD_SetPoint(0,0,0xf800);
+  LCD_SetPoint(100,0,0xf800);
+  LCD_SetPoint(0,100,0xf800);
+  LCD_SetPoint(100,100,0xf800);
+  
+  
   vTaskStartScheduler();
 
 
@@ -132,12 +138,28 @@ int main(void)
 
 
 
-void vTaskLED1(void *pvParameters) {
-
+void vTaskLED1(void *pvParameters) 
+{
+  uint16_t i,v,y;
+  int32_t x;
+  i =0;
+  v = SIGNAL_BUFFER_SIZE;
   while (1)
   {
     printf("This is task 1\n");
-    vTaskDelay( 500 );
+   // vTaskDelay( 500 );
+    
+    x = (int32_t)wave_data[i];
+    x = x + 32000;
+    x = (x*240)/64000;
+    i = i+4;    
+    y = (i * 320)/400;
+    TP_DrawPoint((uint16_t)x,y);
+    //LCD_SetPoint((uint16_t)x,y,0xf800);
+    if(i > v)
+    {
+      i = 0;
+    }  
   }
 
 }
@@ -173,18 +195,18 @@ void generate_signal(uint16_t num)
         //   sin( 2*M_PI*( (double)i)/( (double)(4.0*num) ))//  1kHz
         //  + sin( 4*M_PI*( (double)i)/( (double)(4.0*num) ))//  2kHz
          + sin( 6*M_PI*( (double)i)/( (double)(4.0*num) ))//  3kHz
-         + sin( 8*M_PI*( (double)i)/( (double)(4.0*num) ))//  4kHz
+//         + sin( 8*M_PI*( (double)i)/( (double)(4.0*num) ))//  4kHz
         //  + sin( 10*M_PI*( (double)i)/( (double)(4.0*num) ))// 5kHz
-         + sin( 12*M_PI*( (double)i)/( (double)(4.0*num) ))// 6kHz
+//         + sin( 12*M_PI*( (double)i)/( (double)(4.0*num) ))// 6kHz
         //  + sin( 14*M_PI*( (double)i)/( (double)(4.0*num) ))// 7kHz
-         + sin( 16*M_PI*( (double)i)/( (double)(4.0*num) ))// 8kHz
+//         + sin( 16*M_PI*( (double)i)/( (double)(4.0*num) ))// 8kHz
         //  + sin( 18*M_PI*( (double)i)/( (double)(4.0*num) ))// 9kHz
         //  + sin( 20*M_PI*( (double)i)/( (double)(4.0*num) ))// 10kHz
         //  + sin( 22*M_PI*( (double)i)/( (double)(4.0*num) ))// 11kHz
-         + sin( 24*M_PI*( (double)i)/( (double)(4.0*num) ))// 12kHz
-         + sin( 36*M_PI*( (double)i)/( (double)(4.0*num) ))// 18kHz
+//         + sin( 24*M_PI*( (double)i)/( (double)(4.0*num) ))// 12kHz
+//         + sin( 36*M_PI*( (double)i)/( (double)(4.0*num) ))// 18kHz
          );
-    b=b/6.0;
+    //b=b/6.0;
     wave_data[i] = (uint16_t)(b*32000.0);//first byte of 32 bits frame Left Ch
     i++;
     wave_data[i] = 0;(uint16_t)(b*32000.0);//second byte of 32 bits frame Left Ch
