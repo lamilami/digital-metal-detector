@@ -184,7 +184,8 @@ static __inline uint16_t LCD_ReadReg(uint8_t LCD_Reg)
 * Return         : None
 * Attention		 : None
 *******************************************************************************/
-static __inline void LCD_WriteRAM_Prepare(void)
+/* static __inline void LCD_WriteRAM_Prepare(void) */
+__inline void LCD_WriteRAM_Prepare(void)
 {
   LCD_REG = R34;
 }
@@ -197,7 +198,8 @@ static __inline void LCD_WriteRAM_Prepare(void)
 * Return         : None
 * Attention		 : None
 *******************************************************************************/
-static __inline void LCD_WriteRAM(uint16_t RGB_Code)
+/* static __inline void LCD_WriteRAM(uint16_t RGB_Code) */
+__inline void LCD_WriteRAM(uint16_t RGB_Code)
 {
   /* Write 16-bit GRAM Reg */
   LCD_RAM = RGB_Code;
@@ -818,6 +820,98 @@ void PutChar(unsigned short Xpos,unsigned short Ypos,unsigned char c,unsigned sh
   }
 }
 
+
+/******************************************************************************
+* Function Name  : PutChar
+* Description    : 将Lcd屏上任意位置显示一个字符
+* Input          : - Xpos: 水平坐标
+*                  - Ypos: 垂直坐标
+*				   - c: 显示的字符
+*				   - charColor: 字符颜色
+*				   - bkColor: 背景颜色
+* Output         : None
+* Return         : None
+* Attention		 : None
+*******************************************************************************/
+void PutCharRotate(unsigned short Xpos,unsigned short Ypos,unsigned char c,unsigned short charColor,unsigned short bkColor,uint8_t rotation)
+{
+  unsigned short i=0;
+  unsigned short j=0;
+  unsigned char buffer[16];
+  unsigned char tmp_char=0;
+  GetASCIICode(buffer,c);  /* 取字模数据 */
+
+  switch (rotation)
+  {
+    case 1 :
+      for (i=0;i<16;i++)
+      {
+        tmp_char=buffer[i];/* 15 - i -> up direction */
+        for (j=0;j<8;j++)
+        {
+          if ( (tmp_char >> 7-j) & 0x01 == 0x01)
+          {
+            LCD_SetPoint(Xpos+i,Ypos+j,charColor);  /* 字符颜色 */
+          }
+          else
+          {
+            LCD_SetPoint(Xpos+i,Ypos+j,bkColor);  /* 背景颜色 */
+          }
+        }
+      }
+      break;
+    case 2 :
+      for (i=0;i<16;i++)
+      {
+        tmp_char=buffer[15-i];/* 15 - i -> up direction */
+        for (j=0;j<8;j++)
+        {
+          if ( (tmp_char >> 7-j) & 0x01 == 0x01)
+          {
+            LCD_SetPoint(Xpos+j,Ypos+i,charColor);  /* 字符颜色 */
+          }
+          else
+          {
+            LCD_SetPoint(Xpos+j,Ypos+i,bkColor);  /* 背景颜色 */
+          }
+        }
+      }
+      break;
+    case 3 :
+      for (i=0;i<16;i++)
+      {
+        tmp_char=buffer[15- i];/* 15 - i -> up direction */
+        for (j=0;j<8;j++)
+        {
+          if ( (tmp_char >> 7-j) & 0x01 == 0x01)
+          {
+            LCD_SetPoint(Xpos+i,Ypos+j,charColor);  /* 字符颜色 */
+          }
+          else
+          {
+            LCD_SetPoint(Xpos+i,Ypos+j,bkColor);  /* 背景颜色 */
+          }
+        }
+      }
+      break;
+    default:
+      for (i=0;i<16;i++)
+      {
+        tmp_char=buffer[15 - i];/* 15 - i -> up direction */
+        for (j=0;j<8;j++)
+        {
+          if ( (tmp_char >> 7-j) & 0x01 == 0x01)
+          {
+            LCD_SetPoint(Xpos+j,Ypos+i,charColor);  /* 字符颜色 */
+          }
+          else
+          {
+            LCD_SetPoint(Xpos+j,Ypos+i,bkColor);  /* 背景颜色 */
+          }
+        }
+      }
+  }/* switch*/
+}
 /******************************************************************************
 * Function Name  : GUI_Text
 * Description    : 在指定座标显示字符串
@@ -845,6 +939,44 @@ uint8_t TempChar;
     {
       Xpos=0;
       Ypos+=16;
+    }
+    else
+    {
+      Xpos=0;
+      Ypos=0;
+    }
+  }
+  while (*str!=0);
+}
+
+/******************************************************************************
+* Function Name  : GUI_Text_Rotated
+* Description    : print text to LCD in rotated dirrection(support dir 3 only)
+* Input          : - Xpos:
+*                  - Ypos:
+*				   - str: text string
+*				   - charColor: text color
+*				   - bkColor: scren color
+* Output         : None
+* Return         : None
+* Attention		 : None
+*******************************************************************************/
+void GUI_Text_Rotated(uint16_t Xpos, uint16_t Ypos, uint8_t *str,uint16_t Color, uint16_t bkColor,uint8_t rotation)
+{
+uint8_t TempChar;
+rotation = 3;/* This function suport dir 3 only. */
+ do
+  {
+    TempChar=*str++;
+    PutCharRotate(Xpos, Ypos, TempChar, Color,bkColor, rotation);
+    if (Ypos<304)
+    {
+      Ypos+=8;
+    }
+    else if (Xpos<232)
+    {
+      Ypos=0;
+      Xpos-=16;
     }
     else
     {

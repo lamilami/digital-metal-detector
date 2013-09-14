@@ -155,6 +155,9 @@
 
 #define RGB565CONVERT(red, green, blue) (int) (((red >> 3) << 11) | ((green >> 2) << 5) | (blue >> 3))
 
+void LCD_WriteRAM_Prepare(void);
+void LCD_WriteRAM(uint16_t RGB_Code);
+
 /* Private function prototypes -----------------------------------------------*/
 void LCD_Initializtion(void);
 void LCD_BackLight_Init(void);
@@ -167,11 +170,14 @@ void LCD_DrawLine(int x1, int y1, int x2, int y2,uint16_t bkColor);
 void LCD_SetWindows(uint16_t xStart,uint16_t yStart,uint16_t xLong,uint16_t yLong);
 void LCD_DrawPicture(uint16_t StartX,uint16_t StartY,uint16_t EndX,uint16_t EndY,uint16_t *pic);
 void GUI_Text(uint16_t Xpos, uint16_t Ypos, uint8_t *str,uint16_t Color, uint16_t bkColor);
+void GUI_Text_Rotated(uint16_t Xpos, uint16_t Ypos, uint8_t *str,uint16_t Color, uint16_t bkColor,uint8_t rotation);
 void PutChar(unsigned short Xpos,unsigned short Ypos,unsigned char c,unsigned short charColor,unsigned short bkColor);
+void PutCharRotate(unsigned short Xpos,unsigned short Ypos,unsigned char c,unsigned short charColor,unsigned short bkColor,uint8_t rotation);
+void RotateCharBuffer(unsigned char* pBuffer);
 void PutChinese(uint16_t Xpos,uint16_t Ypos,uint8_t *str,uint16_t Color,uint16_t bkColor);
 void GUI_Chinese(uint16_t Xpos, uint16_t Ypos, uint8_t *str,uint16_t Color, uint16_t bkColor);
-
 #endif
+
 /*********************************************************************************************************
       END FILE
 *********************************************************************************************************/

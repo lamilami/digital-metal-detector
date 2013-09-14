@@ -41,8 +41,8 @@
 #include <math.h>
 #include "main.h"
 
-
-
+#include "board_GUI_primitives.h"
+#include "board_GUI.h"
 
 
 #ifdef __GNUC__
@@ -76,7 +76,8 @@ uint16_t wave_data[SIGNAL_BUFFER_SIZE];
 int main(void)
 {
 
-
+  uint8_t *str = "TEst_12345678901234567890123456789012345678901234567890";
+  uint8_t text_buf[20];
   /* Init system delay.*/
   delay_init();
   /* Init system stdio. */
@@ -86,15 +87,28 @@ int main(void)
   /* start DMA to generate output signal.*/
   audio_device_start();
 
+
+  /* This part of code should discribe LCD init and LCD GUI */
+
   LCD_Initializtion();
   LCD_BackLight_Init();
   delay_init();
   TP_Init();
   TouchPanel_Calibrate();
 
-  LCD_Clear(0xffff);
-  /* Infinite loop */
+  LCD_Clear(sys_LightGray);
 
+
+  /* Infinite loop */
+/* Usefull function for print test */
+#if 0
+  /* Print char to XY position. */
+  PutCharRotate(160,100,'3',0xF800,0,3);/* Right position.*/
+  /* Print string to XY position with normal orientation. */
+  GUI_Text(100, 100, str,0xF800, 0);
+  /* Print sring to XY position with some another orientation.*/
+  GUI_Text_Rotated(100, 140, str,0xF800, 0,3);
+#endif
 
 
   xTaskCreate( vTaskLED1, ( signed char * ) "LED1", configMINIMAL_STACK_SIZE, NULL, 2,
@@ -104,20 +118,49 @@ int main(void)
 
 
   LCD_SetPoint(0,0,0xf800);
-  LCD_SetPoint(100,0,0xf800);
-  LCD_SetPoint(0,100,0xf800);
-  LCD_SetPoint(100,100,0xf800);
-  
-  
-  vTaskStartScheduler();
+
+#if 0
+  {
+    uint32_t count = 0;
+    uint32_t color = 0;
+
+    color=0;
+    while(color <= 0xFFFF)
+    {
+      while(count < 10000)
+      {
+        LCD_WriteRAM_Prepare();
+        LCD_WriteRAM((uint16_t)color);
+        //     delay_us(10000);
+        count++;
+      }
+      count = 0 ;
+      sprintf(text_buf,"%d",color);
+      GUI_Text_Rotated(100, 200, text_buf,0x0, 0xFFFF,3);
+      LCD_SetPoint(0,0,(uint16_t)color);
+      color++;
+    }
+
+  }
+#endif
+ board_GUI_Init();
+while(0)
+{
+  GuiButtonPressOnOffDraw(&button_1,0);
+  delay_us(400000);
+  GuiButtonPressOnOffDraw(&button_1,1);
+  delay_us(400000);
+}
+
+
+
+
+vTaskStartScheduler();
 
 
   while (1)
   {
     getDisplayPoint(&display, Read_Ads7846(), &matrix ) ;
-
-    //LCD_SetPoint(display.x,display.y,0xf800);
-
 
     TP_DrawPoint(display.x,display.y);
     TP_DrawPoint(display.x,display.y-1);
@@ -138,7 +181,7 @@ int main(void)
 
 
 
-void vTaskLED1(void *pvParameters) 
+void vTaskLED1(void *pvParameters)
 {
   uint16_t i,v,y;
   int32_t x;
@@ -148,18 +191,18 @@ void vTaskLED1(void *pvParameters)
   {
     printf("This is task 1\n");
    // vTaskDelay( 500 );
-    
+
     x = (int32_t)wave_data[i];
     x = x + 32000;
     x = (x*240)/64000;
-    i = i+4;    
+    i = i+4;
     y = (i * 320)/400;
     TP_DrawPoint((uint16_t)x,y);
     //LCD_SetPoint((uint16_t)x,y,0xf800);
     if(i > v)
     {
       i = 0;
-    }  
+    }
   }
 
 }
@@ -173,7 +216,8 @@ void vTaskLED2(void *pvParameters) {
     TP_DrawPoint(display.x,display.y+1);
     TP_DrawPoint(display.x+1,display.y+1);
     TP_DrawPoint(display.x+1,display.y);
-    printf("This is task 2\n");
+    //printf("This is task 2\n");
+   // board_GUI_OnTouch(display.x,display.y);
     taskYIELD();
   }
 
@@ -192,21 +236,22 @@ void generate_signal(uint16_t num)
   while(i < (4*num))
   {
     b = (
-        //   sin( 2*M_PI*( (double)i)/( (double)(4.0*num) ))//  1kHz
+           sin( 2*M_PI*( (double)i)/( (double)(4.0*num) ))//  1kHz
         //  + sin( 4*M_PI*( (double)i)/( (double)(4.0*num) ))//  2kHz
          + sin( 6*M_PI*( (double)i)/( (double)(4.0*num) ))//  3kHz
 //         + sin( 8*M_PI*( (double)i)/( (double)(4.0*num) ))//  4kHz
         //  + sin( 10*M_PI*( (double)i)/( (double)(4.0*num) ))// 5kHz
-//         + sin( 12*M_PI*( (double)i)/( (double)(4.0*num) ))// 6kHz
+         + sin( 12*M_PI*( (double)i)/( (double)(4.0*num) ))// 6kHz
         //  + sin( 14*M_PI*( (double)i)/( (double)(4.0*num) ))// 7kHz
 //         + sin( 16*M_PI*( (double)i)/( (double)(4.0*num) ))// 8kHz
         //  + sin( 18*M_PI*( (double)i)/( (double)(4.0*num) ))// 9kHz
         //  + sin( 20*M_PI*( (double)i)/( (double)(4.0*num) ))// 10kHz
         //  + sin( 22*M_PI*( (double)i)/( (double)(4.0*num) ))// 11kHz
-//         + sin( 24*M_PI*( (double)i)/( (double)(4.0*num) ))// 12kHz
+         + sin( 24*M_PI*( (double)i)/( (double)(4.0*num) ))// 12kHz
 //         + sin( 36*M_PI*( (double)i)/( (double)(4.0*num) ))// 18kHz
          );
     //b=b/6.0;
+    b=b/100;
     wave_data[i] = (uint16_t)(b*32000.0);//first byte of 32 bits frame Left Ch
     i++;
     wave_data[i] = 0;(uint16_t)(b*32000.0);//second byte of 32 bits frame Left Ch

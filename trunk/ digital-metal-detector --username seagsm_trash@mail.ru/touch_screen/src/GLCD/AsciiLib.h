@@ -1,4 +1,4 @@
-/****************************************Copyright (c)**************************************************                         
+/****************************************Copyright (c)**************************************************
 **
 **                                 http://www.powermcu.com
 **
@@ -13,26 +13,26 @@
 ** Descriptions:		The original version
 **
 **------------------------------------------------------------------------------------------------------
-** Modified by:			
-** Modified date:	
+** Modified by:
+** Modified date:
 ** Version:
-** Descriptions:		
+** Descriptions:
 ********************************************************************************************************/
 
 #ifndef __AsciiLib_H
-#define __AsciiLib_H  
+#define __AsciiLib_H
 
 /* Includes ------------------------------------------------------------------*/
 #include <string.h>
 
 /* Private define ------------------------------------------------------------*/
-//#define  ASCII_8X16_MS_Gothic
-#define  ASCII_8X16_System
+#define  ASCII_8X16_MS_Gothic
+//#define  ASCII_8X16_System
 
 /* Private function prototypes -----------------------------------------------*/
 void GetASCIICode(unsigned char* pBuffer,unsigned char ASCII);
 
-#endif 
+#endif
 
 
 /*********************************************************************************************************
