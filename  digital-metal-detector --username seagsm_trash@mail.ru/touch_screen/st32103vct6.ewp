@@ -87,7 +87,7 @@
         </option>
         <option>
           <name>OGLastSavedByProductVersion</name>
-          <state>6.40.5.54273</state>
+          <state>6.40.3.54103</state>
         </option>
         <option>
           <name>GeneralEnableMisra</name>
@@ -301,6 +301,7 @@
           <state>$PROJ_DIR$\src</state>
           <state>$PROJ_DIR$\src\inc</state>
           <state>$PROJ_DIR$\src\Board\I2S_board_driver</state>
+          <state>$PROJ_DIR$\src\Board\board_GUI</state>
           <state>$PROJ_DIR$\src\GLCD</state>
           <state>$PROJ_DIR$\src\TouchPanel</state>
           <state>$PROJ_DIR$\src\WM8731</state>
@@ -1887,6 +1888,27 @@
     <name>src</name>
     <group>
       <name>Board</name>
+      <group>
+        <name>board_GUI</name>
+        <file>
+          <name>$PROJ_DIR$\src\Board\board_GUI\board_GUI.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\src\Board\board_GUI\board_GUI.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\src\Board\board_GUI\board_GUI_primitives.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\src\Board\board_GUI\board_GUI_primitives.h</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\src\Board\board_GUI\ts_button.c</name>
+        </file>
+        <file>
+          <name>$PROJ_DIR$\src\Board\board_GUI\ts_button.h</name>
+        </file>
+      </group>
       <group>
         <name>I2S_board_driver</name>
         <file>
