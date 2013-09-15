@@ -437,15 +437,15 @@ FunctionalState getDisplayPoint(Coordinate * displayPtr,
   if( matrixPtr->Divider != 0 )
   {
     /* XD = AX+BY+C */
-    displayPtr->x = ( (matrixPtr->An * screenPtr->x) +
-                      (matrixPtr->Bn * screenPtr->y) +
-                       matrixPtr->Cn
-                    ) / matrixPtr->Divider ;
+    displayPtr->x =(uint16_t)( ( (matrixPtr->An * screenPtr->x) +
+                                 (matrixPtr->Bn * screenPtr->y) +
+                                  matrixPtr->Cn
+                               ) / matrixPtr->Divider) ;
 	/* YD = DX+EY+F */
-    displayPtr->y = ( (matrixPtr->Dn * screenPtr->x) +
-                      (matrixPtr->En * screenPtr->y) +
-                       matrixPtr->Fn
-                    ) / matrixPtr->Divider ;
+    displayPtr->y = (uint16_t)(( (matrixPtr->Dn * screenPtr->x) +
+                                (matrixPtr->En * screenPtr->y) +
+                                 matrixPtr->Fn
+                               ) / matrixPtr->Divider) ;
   }
   else
   {

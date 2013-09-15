@@ -13,8 +13,11 @@ extern GUI_BUTTON button_3;
 extern GUI_BUTTON button_4;
 
 void board_GUI_Init(void);
-
-
+void board_GUI_ScreenOnDraw(void);
+void board_GUI_OnTouch(uint16_t Xpos,uint16_t Ypos);
+void button1_OnTouch(void);
+void button2_OnTouch(void);
+void button4_OnTouch(void);
 
 
 
