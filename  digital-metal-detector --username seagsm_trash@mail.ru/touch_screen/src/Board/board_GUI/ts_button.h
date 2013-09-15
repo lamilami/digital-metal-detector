@@ -21,6 +21,9 @@ typedef struct
 	void (*fOnUntouch)(void);
 } GUI_BUTTON;
 
+extern uint16_t touch_Xpos, touch_Ypos;
+
+
 void GuiButtonInit(GUI_BUTTON *button, uint16_t Xpos, uint16_t Ypos, uint16_t width, uint16_t height,uint8_t *Text);
 void GuiButtonOnDraw(GUI_BUTTON *button,uint8_t condition);
 void GuiButtonPressOnOffDraw(GUI_BUTTON *button,uint8_t condition);
