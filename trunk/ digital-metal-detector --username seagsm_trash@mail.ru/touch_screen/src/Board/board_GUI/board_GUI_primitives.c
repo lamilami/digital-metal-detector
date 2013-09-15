@@ -1,5 +1,5 @@
 
-/*Here we are discribing a basic function for driwing. */
+/*Here we are describing a basic function for driwing. */
 
 #include "board_GUI_primitives.h"
 
@@ -10,9 +10,14 @@ void board_Draw_X_Line(uint16_t Xpos,uint16_t Ypos, uint16_t heigth, uint16_t co
   uint16_t counter = 0;
   LCD_SetPoint(Xpos,Ypos,color);
   heigth --;/* We already put one pixel. */
+  /*
+    We should set register one time (LCD_WriteRAM_Prepare()) and can write to it using
+    autoincrement of address.
+  */
+  LCD_WriteRAM_Prepare();
   while(counter < heigth)
-  { /* For line X work autoincrementing, so we dod not need address variable. */
-    LCD_WriteRAM_Prepare();
+  {
+    /* For line X work autoincrementing, so we dod not need address variable. */
     LCD_WriteRAM(color);
     counter++;
   }

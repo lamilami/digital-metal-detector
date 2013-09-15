@@ -9,7 +9,8 @@
 
 extern GUI_BUTTON button_1;
 extern GUI_BUTTON button_2;
-
+extern GUI_BUTTON button_3;
+extern GUI_BUTTON button_4;
 
 void board_GUI_Init(void);
 

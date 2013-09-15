@@ -106,15 +106,13 @@ void GuiButtonPressOnOffDraw(GUI_BUTTON *button,uint8_t condition)
 
 void GuiButtonOnTouch(GUI_BUTTON *button,uint16_t Xpos,uint16_t Ypos)
 {
-  static uint8_t result_old = 0;
-  uint8_t result_new;
+  uint8_t result;
   /* Read Press button state. */
+  result = button->button_Touch.Pressed;
   GuiButtonOnTouchRead(button,Xpos,Ypos);
-  result_new = button->button_Touch.Pressed;
-  if( result_new != result_old)
+  if( result != button->button_Touch.Pressed)
   {
-    GuiButtonPressOnOffDraw(button,result_new);
-    result_old = result_new;
+    GuiButtonPressOnOffDraw(button,button->button_Touch.Pressed);
   }
 
 }
@@ -125,7 +123,10 @@ void GuiButtonOnTouchRead(GUI_BUTTON *button,uint16_t Xpos,uint16_t Ypos)
   a = ( button->button_Xpos <= Xpos);
   b = ( Xpos <= (button->button_Xpos + button->button_Heigth));
   c = ( button->button_Ypos <= Ypos);
-  d = (Ypos <= (button->button_Xpos + button->button_Width));
+  d = (Ypos <= (button->button_Ypos + button->button_Width));
+
+  touch_Xpos = Xpos;
+  touch_Ypos = Ypos;
 
   if(a&b&c&d)
   {

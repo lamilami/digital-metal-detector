@@ -64,6 +64,8 @@ void vTaskLED1(void *pvParameters);
 
 uint16_t wave_data[SIGNAL_BUFFER_SIZE];
 
+const portTickType xDelay = 100 / portTICK_RATE_MS;
+uint16_t touch_Xpos =0, touch_Ypos = 0;
 
 /*******************************************************************************
 * Function Name  : main
@@ -157,17 +159,6 @@ while(0)
 
 vTaskStartScheduler();
 
-
-  while (1)
-  {
-    getDisplayPoint(&display, Read_Ads7846(), &matrix ) ;
-
-    TP_DrawPoint(display.x,display.y);
-    TP_DrawPoint(display.x,display.y-1);
-    TP_DrawPoint(display.x-1,display.y-1);
-    TP_DrawPoint(display.x-1,display.y);
-  }
-
   /* Main loop. */
   while(1)
   {
@@ -183,28 +174,19 @@ vTaskStartScheduler();
 
 void vTaskLED1(void *pvParameters)
 {
-  uint16_t i,v,y;
-  int32_t x;
-  i =0;
-  v = SIGNAL_BUFFER_SIZE;
-  while (1)
-  {
-    printf("This is task 1\n");
-   // vTaskDelay( 500 );
-
-    x = (int32_t)wave_data[i];
-    x = x + 32000;
-    x = (x*240)/64000;
-    i = i+4;
-    y = (i * 320)/400;
-    TP_DrawPoint((uint16_t)x,y);
-    //LCD_SetPoint((uint16_t)x,y,0xf800);
-    if(i > v)
+    uint8_t text_buf[20];
+    while(1)
     {
-      i = 0;
+      sprintf(text_buf,"                ");
+      GUI_Text_Rotated(180, 10, text_buf,0x0, 0xFFFF,3);
+      sprintf(text_buf,"Xpos=%d",touch_Xpos);
+      GUI_Text_Rotated(180, 10, text_buf,0x0, 0xFFFF,3);
+      sprintf(text_buf,"                ");
+      GUI_Text_Rotated(200, 10, text_buf,0x0, 0xFFFF,3);
+      sprintf(text_buf,"Ypos=%d",touch_Ypos);
+      GUI_Text_Rotated(200, 10, text_buf,0x0, 0xFFFF,3);
+      vTaskDelay( xDelay );
     }
-  }
-
 }
 
 void vTaskLED2(void *pvParameters) {
@@ -212,12 +194,15 @@ void vTaskLED2(void *pvParameters) {
   while (1)
   {
     getDisplayPoint(&display, Read_Ads7846(), &matrix ) ;
-    TP_DrawPoint(display.x,display.y);
-    TP_DrawPoint(display.x,display.y+1);
-    TP_DrawPoint(display.x+1,display.y+1);
-    TP_DrawPoint(display.x+1,display.y);
+
+    //touch_Xpos = display.x;
+    //touch_Ypos = display.y;
+    //TP_DrawPoint(display.x,display.y);
+    //TP_DrawPoint(display.x,display.y+1);
+    //TP_DrawPoint(display.x+1,display.y+1);
+    //TP_DrawPoint(display.x+1,display.y);
     //printf("This is task 2\n");
-   // board_GUI_OnTouch(display.x,display.y);
+    board_GUI_OnTouch(display.x,display.y);
     taskYIELD();
   }
 
