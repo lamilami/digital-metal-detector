@@ -77,9 +77,6 @@ uint16_t touch_Xpos =0, touch_Ypos = 0;
 *******************************************************************************/
 int main(void)
 {
-
-  uint8_t *str = "TEst_12345678901234567890123456789012345678901234567890";
-  uint8_t text_buf[20];
   /* Init system delay.*/
   delay_init();
   /* Init system stdio. */
@@ -98,7 +95,7 @@ int main(void)
   TP_Init();
   TouchPanel_Calibrate();
 
-  LCD_Clear(sys_LightGray);
+  LCD_Clear(0xFFFF);
 
 
   /* Infinite loop */
@@ -177,14 +174,14 @@ void vTaskLED1(void *pvParameters)
     uint8_t text_buf[20];
     while(1)
     {
-      sprintf(text_buf,"                ");
-      GUI_Text_Rotated(180, 10, text_buf,0x0, 0xFFFF,3);
-      sprintf(text_buf,"Xpos=%d",touch_Xpos);
-      GUI_Text_Rotated(180, 10, text_buf,0x0, 0xFFFF,3);
-      sprintf(text_buf,"                ");
-      GUI_Text_Rotated(200, 10, text_buf,0x0, 0xFFFF,3);
-      sprintf(text_buf,"Ypos=%d",touch_Ypos);
-      GUI_Text_Rotated(200, 10, text_buf,0x0, 0xFFFF,3);
+      sprintf((char*)text_buf,"                ");
+      GUI_Text_Rotated(180, 50, text_buf,BG_SYSTEM_TEXT_COLOR, BG_SYSTEM_SCREEN_COLOR,3);
+      sprintf((char*)text_buf,"Xpos=%d",touch_Xpos);
+      GUI_Text_Rotated(180, 10, text_buf,BG_SYSTEM_TEXT_COLOR, BG_SYSTEM_SCREEN_COLOR,3);
+      sprintf((char*)text_buf,"                ");
+      GUI_Text_Rotated(200, 50, text_buf,BG_SYSTEM_TEXT_COLOR, BG_SYSTEM_SCREEN_COLOR,3);
+      sprintf((char*)text_buf,"Ypos=%d",touch_Ypos);
+      GUI_Text_Rotated(200, 10, text_buf,BG_SYSTEM_TEXT_COLOR, BG_SYSTEM_SCREEN_COLOR,3);
       vTaskDelay( xDelay );
     }
 }
@@ -239,11 +236,11 @@ void generate_signal(uint16_t num)
     b=b/100;
     wave_data[i] = (uint16_t)(b*32000.0);//first byte of 32 bits frame Left Ch
     i++;
-    wave_data[i] = 0;(uint16_t)(b*32000.0);//second byte of 32 bits frame Left Ch
+    wave_data[i] = 0;//(uint16_t)(b*32000.0);//second byte of 32 bits frame Left Ch
     i++;
     wave_data[i] = (uint16_t)(b*32000.0);//first byte of 32 bits frame Right Ch
     i++;
-    wave_data[i] = 0;(uint16_t)(b*32000.0);//second byte of 32 bits frame Right Ch
+    wave_data[i] = 0;//(uint16_t)(b*32000.0);//second byte of 32 bits frame Right Ch
     i++;
   }
 }

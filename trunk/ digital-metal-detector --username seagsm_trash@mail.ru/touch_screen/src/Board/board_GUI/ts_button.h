@@ -3,6 +3,7 @@
 
 #include "stm32f10x.h"
 #include "board_GUI_primitives.h"
+#include "string.h"
 
 typedef struct
 {
@@ -24,7 +25,17 @@ typedef struct
 extern uint16_t touch_Xpos, touch_Ypos;
 
 
-void GuiButtonInit(GUI_BUTTON *button, uint16_t Xpos, uint16_t Ypos, uint16_t width, uint16_t height,uint8_t *Text);
+
+void GuiButtonInit(
+                   GUI_BUTTON *button,    /* Pointer to the button structure. */
+                   uint16_t Xpos,         /* Left Down coordinate      */
+                   uint16_t Ypos,         /* of the button rectangule.  */
+                   uint16_t height,
+                   uint16_t width,
+                   uint8_t *Text,         /* Pointer to string with botton text.    */
+                   void (*OnTouch)(void), /* Pointer to On touch event function.    */
+                   void (*OnUnTouch)(void)/* Pointer to On Un touch event function. */
+                   );
 void GuiButtonOnDraw(GUI_BUTTON *button,uint8_t condition);
 void GuiButtonPressOnOffDraw(GUI_BUTTON *button,uint8_t condition);
 void GuiButtonOnTouchRead(GUI_BUTTON *button,uint16_t Xpos,uint16_t Ypos);

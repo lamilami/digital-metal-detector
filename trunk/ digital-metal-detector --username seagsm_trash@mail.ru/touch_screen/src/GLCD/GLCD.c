@@ -742,8 +742,8 @@ void LCD_DrawLine(int x1, int y1, int x2, int y2,uint16_t bkColor)
   Dx=x2-x1;
   Dy=y2-y1;
 
-  dx=fabs(x2-x1);
-  dy=fabs(y2-y1);
+  dx=(int)fabs(x2-x1);
+  dy=(int)fabs(y2-y1);
   x=x1;
   y=y1;
   if(dy>dx)

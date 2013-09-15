@@ -12,9 +12,16 @@ Vadym Voloktin. 2013
 */
 
 /* Fill botton structure by valid values. */
-void GuiButtonInit(GUI_BUTTON *button, uint16_t Xpos, uint16_t Ypos, uint16_t height, uint16_t width,uint8_t *Text)
+void GuiButtonInit( GUI_BUTTON *button,
+                    uint16_t Xpos,
+                    uint16_t Ypos,
+                    uint16_t height,
+                    uint16_t width,
+                    uint8_t *Text,
+                    void (*OnTouch)(void),
+                    void (*OnUnTouch)(void)
+                      )
 {
-
   button->button_Xpos   = Xpos;
   button->button_Ypos   = Ypos;
   button->button_Heigth = height;
@@ -26,8 +33,10 @@ void GuiButtonInit(GUI_BUTTON *button, uint16_t Xpos, uint16_t Ypos, uint16_t he
   button->button_Border_Width = 2;
   button->button_Text.Text   = Text;
   button->button_Text.TextRotate =3;
-  button->button_Text.Text_Color = sys_BLACK;
+  button->button_Text.Text_Color = sys_Black;
   button->button_Text.bg_Text_Color = button->button_Color;
+  button->fOnTouch   = OnTouch;   /* Pointer to process function. */
+  button->fOnUntouch = OnUnTouch; /* Pointer to process function. */
 };
 /* Draw button on the screen. */
 void GuiButtonOnDraw(GUI_BUTTON *button,uint8_t condition)
@@ -39,7 +48,7 @@ void GuiButtonOnDraw(GUI_BUTTON *button,uint8_t condition)
   h = button->button_Heigth;
   w = button->button_Width;
   bw= button->button_Border_Width;
-  tw= strlen(button->button_Text.Text);
+  tw= strlen((char const*)button->button_Text.Text);
   tw = tw*8;
   /* Drawing button border. */
   while(counter < bw)
@@ -65,7 +74,7 @@ void GuiButtonOnDraw(GUI_BUTTON *button,uint8_t condition)
 /* This function redraw Press UnPress zone of buttotn. */
 void GuiButtonPressOnOffDraw(GUI_BUTTON *button,uint8_t condition)
 {
-  uint16_t x=0,y=0,h=0,w=0,bw=0,tw=0,counter=0;
+  uint16_t x=0,y=0,h=0,w=0,bw=0,counter=0;
   GUI_COLOR color;
 
   x = button->button_Xpos;
@@ -113,6 +122,11 @@ void GuiButtonOnTouch(GUI_BUTTON *button,uint16_t Xpos,uint16_t Ypos)
   if( result != button->button_Touch.Pressed)
   {
     GuiButtonPressOnOffDraw(button,button->button_Touch.Pressed);
+    if(button->fOnTouch != 0)
+    {
+      button->fOnTouch();
+    }
+
   }
 
 }

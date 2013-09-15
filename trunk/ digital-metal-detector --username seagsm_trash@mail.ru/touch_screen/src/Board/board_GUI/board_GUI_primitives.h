@@ -23,10 +23,11 @@ Example: uint16_t colot = ASSEMBLE_RGB(128 ,128, 128);//Gray
 */
 typedef enum
 {
-  sys_RED       = 0xF800,
-  sys_GREEN     = 0x07E0,
-  sys_BLUE      = 0x001F,
-  sys_BLACK     = 0x0000,
+  sys_White     = 0xFFFF,
+  sys_Red       = 0xF800,
+  sys_Green     = 0x07E0,
+  sys_Blue      = 0x001F,
+  sys_Black     = 0x0000,
   sys_LightGray = 0xF79E,
   sys_Gray_1    = 0xCE59,
   sys_Gray_2    = 0xD69A,
@@ -34,6 +35,8 @@ typedef enum
   sys_DarkGray  = 0x8410
 } GUI_COLOR ;
 
+#define BG_SYSTEM_SCREEN_COLOR  sys_Black
+#define BG_SYSTEM_TEXT_COLOR  sys_White
 typedef struct
 {
   /* Start position of text. */
@@ -92,8 +95,8 @@ void board_Draw_X_Line(uint16_t Xpos,uint16_t Ypos, uint16_t heigth, uint16_t co
 void board_Draw_Y_Line(uint16_t Xpos,uint16_t Ypos, uint16_t width, uint16_t color);
 void board_Draw_Rect(uint16_t Xpos,uint16_t Ypos, uint16_t heigth, uint16_t width, uint16_t color);
 void board_Draw_FilledRect(uint16_t Xpos,uint16_t Ypos, uint16_t heigth, uint16_t width, uint16_t color);
-
-
+void board_DrawCircle(uint16_t Xpos, uint16_t Ypos, uint16_t radius,uint16_t color);
+void board_DrawFullCircle(uint16_t Xpos, uint16_t Ypos, uint16_t radius, uint16_t color);
 
 
 
