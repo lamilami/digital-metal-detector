@@ -1,8 +1,12 @@
-1. LCD HY32C 240x320. Start point Left-Down corner . x - Vertical 0-239 , y - horisontal 0-319.
+1. CPU       
+  1.1 STM32F103VCT, 256kb flash, 64kb RAM .
+  But in linker file RAM size 0xC000, minus stack,minus heap.   
+
+2. LCD HY32C 240x320. Start point Left-Down corner . x - Vertical 0-239 , y - horisontal 0-319.
    TFT ,65536 color. Interface LCD 16-bit parallel.
-  1.1 Display controller       SSD1289.
-  1.2 Touch Screen contrpller  XPT2046.
-  1.3 HY32C pinout
+  2.1 Display controller       SSD1289.
+  2.2 Touch Screen contrpller  XPT2046.
+  2.3 HY32C pinout
        Pin    IO Pin 
       1 5V Power supply                         2 GND Ground
       
@@ -29,5 +33,12 @@
       31 TP_MOSI SPI_MOSI(TS to SPI)    32(PA7 )        32 TP_MISO      SPI_MISO        31(PA6 )        (TS to SPI) 
       
       33 3V3    3V3                                     34 GND          GND
+   
+    2.4 Using LCD module.
+      LCD + TouchScreen should be used for visualisation and controlling of device. Memory size of one screen is too big,
+      to prepairing screen in CPU memory and copy it in to LCD memory. So should be used point-to-point graphical model.
+      And special graphic function.
+      
+      
       
       

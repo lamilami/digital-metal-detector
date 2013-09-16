@@ -161,7 +161,7 @@ static inline void LCD_WriteReg(uint8_t LCD_Reg,uint16_t LCD_RegValue)
 }
 
 /*******************************************************************************
-* Function Name  : LCD_WriteReg
+* Function Name  : LCD_ReadReg
 * Description    : Reads the selected LCD Register.
 * Input          : None
 * Output         : None
